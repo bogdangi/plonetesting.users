@@ -1,6 +1,12 @@
 Introduction
 ============
 
+.. image:: https://travis-ci.org/bogdangi/plonetesting.users.png?branch=master
+   :target: https://travis-ci.org/bogdangi/plonetesting.users
+
+.. image:: https://coveralls.io/repos/bogdangi/plonetesting.users/badge.png
+   :target: https://coveralls.io/r/bogdangi/plonetesting.users
+
 .. content::
 
 
