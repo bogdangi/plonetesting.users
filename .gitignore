@@ -1,0 +1,5 @@
+/bin
+/buildout-cache
+/develop-eggs
+/parts
+.installed.cfg

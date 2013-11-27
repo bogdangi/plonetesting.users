@@ -1,0 +1,13 @@
+[report]
+omit =
+    extras/*
+    buildout-cache/*
+    bin/*
+    parts/*
+    eggs/*
+    */test*
+    develop-eggs/*
+    bootstrap.py
+    plonetesting.content.egg-info/*
+    /home/*/.buildout/eggs/*
+    /home/*/lib/python*
