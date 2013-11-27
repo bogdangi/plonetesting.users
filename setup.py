@@ -6,7 +6,7 @@ version = '1.0'
 setup(name='plonetesting.users',
       version=version,
       description="plonetesting users data extention",
-      long_description=open("README.txt").read() + "\n" +
+      long_description=open("README.rst").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from
       # http://pypi.python.org/pypi?:action=list_classifiers
@@ -30,6 +30,12 @@ setup(name='plonetesting.users',
           'setuptools',
           # -*- Extra requirements: -*-
       ],
+      extras_require={
+          'test': [
+              'plone.app.robotframework',
+              'plone.app.testing[robot]',
+          ],
+      },
       entry_points="""
       # -*- Entry points: -*-
 
