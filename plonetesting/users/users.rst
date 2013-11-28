@@ -8,6 +8,7 @@ Instalation of this product adds *email as login feature*.
     >>> 'E-mail' in self.browser.contents
     True
 
+
 Register new user
 -----------------
 
@@ -52,7 +53,54 @@ Our profile shoud have additional fields, let's fill them too
     >>> browser.getControl('Register').click()
 
     We can really get the new user.
+
     >>> browser.getControl('Show all').click()
     >>> browser.getLink(url='bob-jones').click()
     >>> '@@user-information?userid=bob-jones' in browser.url
     True
+
+
+Obtain user data from linkedin
+------------------------------
+
+Check control panel with linkedin settings
+
+    >>> browser.open('http://nohost/plone/@@linkedin-settings')
+    >>> 'Linkedin settings' in self.browser.contents
+    True
+
+    Let's try submit empty form
+
+    >>> browser.open('http://nohost/plone/@@linkedin-settings')
+    >>> browser.getControl('Save').click()
+    >>> 'There were some errors.' in self.browser.contents
+    True
+
+    Let's try submit filled form
+
+    >>> browser.getControl('API key').value = 'ApIkEy'
+    >>> browser.getControl('Secret key').value = 'sEcReTkEy'
+    >>> browser.getControl('Save').click()
+    >>> 'Changes saved.' in self.browser.contents
+    True
+    >>> browser.open('http://nohost/plone/@@linkedin-settings')
+    >>> 'ApIkEy' in self.browser.contents
+    True
+    >>> 'sEcReTkEy' in self.browser.contents
+    True
+
+
+    Let's try cancel filled form
+    >>> browser.open('http://nohost/plone/@@linkedin-settings')
+    >>> browser.getControl('API key').value = 'ApIkEyNeW'
+    >>> browser.getControl('Secret key').value = 'sEcReTkEyNeW'
+    >>> browser.getControl('Cancel').click()
+    >>> 'Edit cancelled.' in self.browser.contents
+    True
+    >>> browser.open('http://nohost/plone/@@linkedin-settings')
+    >>> 'ApIkEyNeW' in self.browser.contents
+    False
+    >>> 'sEcReTkEyNeW' in self.browser.contents
+    False
+
+Check *Import Data from LinkeIn* on profile page
