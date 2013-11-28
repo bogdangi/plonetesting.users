@@ -104,3 +104,23 @@ Check control panel with linkedin settings
     False
 
 Check *Import Data from LinkeIn* on profile page
+
+    Login as a Bob
+    >>> browser.open('http://nohost/plone/logout')
+    >>> browser.open('http://nohost/plone/login_form')
+    >>> browser.getControl('E-mail').value = 'bob-jones@example.com'
+    >>> browser.getControl('Password').value = 'secret'
+    >>> browser.getControl('Log in').click()
+    >>> browser.open('http://nohost/plone/@@personal-information')
+    >>> 'Import Data from LinkeIn' in self.browser.contents
+    True
+    >>> browser.getControl('Import Data from LinkeIn').click()
+    >>> "Data from Linkedin is imported" in self.browser.contents
+    True
+    >>> browser.getControl('Save').click()
+    >>> 'Changes saved.' in self.browser.contents
+    True
+    >>> browser.open('http://nohost/plone/@@personal-information')
+    >>> browser.getControl('Cancel').click()
+    >>> 'Changes canceled.' in self.browser.contents
+    True

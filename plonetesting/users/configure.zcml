@@ -31,4 +31,13 @@
       permission="cmf.ManagePortal"
       />
   
+  <!-- Customized personal informatio panel -->
+
+  <browser:page
+      for="Products.CMFPlone.Portal.PloneSite"
+      name="personal-information"
+      class=".userdataschema.CustomizedUserDataPanel"
+      permission="cmf.SetOwnProperties"
+      />
+
 </configure>

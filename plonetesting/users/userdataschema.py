@@ -2,6 +2,18 @@ from plone.app.users.userdataschema import IUserDataSchemaProvider
 from plone.app.users.userdataschema import IUserDataSchema
 from zope.interface import implements
 from zope import schema
+from zope.formlib import form
+
+from zope.event import notify
+from plone.app.form.validators import null_validator
+from plone.app.controlpanel.events import ConfigurationChangedEvent
+from plone.protect import CheckAuthenticator
+
+from Products.statusmessages.interfaces import IStatusMessage
+
+
+from plone.app.users.browser.personalpreferences import UserDataPanel
+
 from plonetesting.users import _
 
 
@@ -76,3 +88,40 @@ class UserDataSchemaProvider(object):
 
     def getSchema(self):
         return IEnhancedUserDataSchema
+
+
+class CustomizedUserDataPanel(UserDataPanel):
+
+    @form.action(_(u'label_save', default=u'Save'), name=u'save')
+    def handle_edit_action(self, action, data):
+        CheckAuthenticator(self.request)
+
+        if form.applyChanges(self.context, self.form_fields, data,
+                             self.adapters):
+            IStatusMessage(self.request).addStatusMessage(
+                _("Changes saved."), type="info")
+            notify(ConfigurationChangedEvent(self, data))
+            self._on_save(data)
+        else:
+            IStatusMessage(self.request).addStatusMessage(
+                _("No changes made."), type="info")
+
+    @form.action(_(u'label_cancel', default=u'Cancel'),
+                 validator=null_validator,
+                 name=u'cancel')
+    def handle_cancel_action(self, action, data):
+        IStatusMessage(self.request).addStatusMessage(_("Changes canceled."),
+                                                      type="info")
+
+        self.request.response.redirect(self.request['ACTUAL_URL'])
+        return ''
+
+    @form.action(_(u'Import Data from LinkeIn'),
+                 name=u'import_data_from_linkedin')
+    def import_data_from_linkedin(self, action, data):
+        #TODO: Implementation of update data
+        IStatusMessage(self.request).addStatusMessage(
+            _(u"Data from Linkedin is imported. " +
+              "To apply this data just click button 'Save'"), type="info")
+        self.request.response.redirect(self.request['ACTUAL_URL'])
+        return ''
