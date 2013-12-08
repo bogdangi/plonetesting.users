@@ -123,3 +123,20 @@ Check *Import Data from LinkeIn* on profile page
     True
     >>> 'Function name' in self.browser.contents
     True
+
+    Check that data from linkedin is not saved
+    >>> browser.getControl('Cancel').click()
+    >>> browser.open('http://nohost/plone/@@personal-information')
+    >>> 'FirstName LastName' in self.browser.contents
+    False
+    >>> 'Function name' in self.browser.contents
+    False
+
+    Check that data from linkedin is saved
+    >>> browser.getControl('Import Data from LinkeIn').click()
+    >>> browser.getControl('Save').click()
+    >>> browser.open('http://nohost/plone/@@personal-information')
+    >>> 'FirstName LastName' in self.browser.contents
+    True
+    >>> 'Function name' in self.browser.contents
+    True
