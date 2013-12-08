@@ -22,8 +22,37 @@ except ImportError:
 from Products.PluggableAuthService.interfaces.plugins import IValidationPlugin
 from Products.CMFCore.interfaces import ISiteRoot
 from zope.component import getUtility
+from plonetesting.users.interfaces import ILinkedinUtility
 
 ptc.setupPloneSite(products=['plonetesting.users'])
+
+
+class LinkedinUtilityTest(object):
+    """ Linkedin utility """
+
+    autentification = None
+    return_url = ''
+
+    def setReturnURL(self, url):
+        """ set return URL """
+        self.return_url = url
+
+    def getAutentification(self):
+        """ return autentification """
+        class Authorization(object):
+            authorization_url = ''
+
+        autentification = Authorization()
+        autentification.authorization_url = self.return_url + '&code=code'
+        self.autentification = autentification
+        return self.autentification
+
+    def getUserProfile(self, code):
+        """ return user profile """
+        return {
+            'firstName': 'FirstName',
+            'lastName': 'LastName',
+            'headline': 'Function name'}
 
 
 class TestCase(FunctionalTestCase):
@@ -38,6 +67,9 @@ class TestCase(FunctionalTestCase):
         sm = getSiteManager(context=self.portal)
         sm.unregisterUtility(provided=IMailHost)
         sm.registerUtility(mailhost, provided=IMailHost)
+        sm.unregisterUtility(provided=ILinkedinUtility)
+        sm.registerUtility(
+            factory=LinkedinUtilityTest, provided=ILinkedinUtility)
 
     def beforeTearDown(self):
         self.portal.MailHost = self.portal._original_MailHost

@@ -40,4 +40,8 @@
       permission="cmf.SetOwnProperties"
       />
 
+  <utility
+      provides="plonetesting.users.interfaces.ILinkedinUtility"
+      factory=".utils.LinkedinUtility" />
+
 </configure>

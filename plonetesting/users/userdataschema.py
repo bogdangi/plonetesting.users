@@ -8,6 +8,9 @@ from zope.event import notify
 from plone.app.form.validators import null_validator
 from plone.app.controlpanel.events import ConfigurationChangedEvent
 from plone.protect import CheckAuthenticator
+from plonetesting.users.interfaces import ILinkedinUtility
+from zope.component import getUtility
+
 
 from Products.statusmessages.interfaces import IStatusMessage
 
@@ -119,9 +122,59 @@ class CustomizedUserDataPanel(UserDataPanel):
     @form.action(_(u'Import Data from LinkeIn'),
                  name=u'import_data_from_linkedin')
     def import_data_from_linkedin(self, action, data):
-        #TODO: Implementation of update data
-        IStatusMessage(self.request).addStatusMessage(
-            _(u"Data from Linkedin is imported. " +
-              "To apply this data just click button 'Save'"), type="info")
-        self.request.response.redirect(self.request['ACTUAL_URL'])
-        return ''
+
+        linkedin_utility = getUtility(ILinkedinUtility)
+        # this is a marker which helps to identify that it comes from linkedin
+        linkedin_utility.setReturnURL(
+            self.request['ACTUAL_URL'] + '?import_data_from_linkedin=true')
+
+        return self.request.response.redirect(
+            linkedin_utility.getAutentification().authorization_url)
+
+    def __call__(self):
+        super(CustomizedUserDataPanel, self).__call__()
+        code = self.request.get('code', None)
+        if code is not None and \
+                self.request.get(
+                    'import_data_from_linkedin', None) is not None:
+
+            user_profile = getUtility(ILinkedinUtility).getUserProfile(code)
+
+            data_from_linkedin = {
+                'fullname': ' '.join(
+                    [user_profile[i] for i in ['firstName', 'lastName']]),
+                'function': user_profile['headline']}
+
+            # Update widgets not form data
+            for i in data_from_linkedin.keys():
+                self.widgets[i].setRenderedValue(data_from_linkedin[i])
+
+            self.form_reset = False
+
+            data = {}
+            errors, action = form.handleSubmit(
+                self.actions, data, self.validate)
+            # the following part will make sure that previous error not
+            # get overriden by new errors. This is usefull for subforms. (ri)
+            if self.errors is None:
+                self.errors = errors
+            else:
+                if errors is not None:
+                    self.errors += tuple(errors)
+
+            if errors:
+                self.status = _('There were errors')
+                result = action.failure(data, errors)
+            elif errors is not None:
+                self.form_reset = True
+                result = action.success(data)
+            else:
+                result = None
+
+            self.form_result = result
+
+            IStatusMessage(self.request).addStatusMessage(
+                _(u"Data from Linkedin is imported. " +
+                  "To apply this data just click button 'Save'"), type="info")
+
+        return self.render()
