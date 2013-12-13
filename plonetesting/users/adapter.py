@@ -7,7 +7,7 @@ class EnhancedUserDataPanelAdapter(UserDataPanelAdapter):
         return self.context.getProperty('company_name', '')
 
     def set_company_name(self, value):
-        return self.context.setMemberProperties({'company_name': value})
+        self.context.setMemberProperties({'company_name': value or ''})
 
     company_name = property(get_company_name, set_company_name)
 
@@ -15,7 +15,7 @@ class EnhancedUserDataPanelAdapter(UserDataPanelAdapter):
         return self.context.getProperty('function', '')
 
     def set_function(self, value):
-        return self.context.setMemberProperties({'function': value})
+        self.context.setMemberProperties({'function': value or ''})
 
     function = property(get_function, set_function)
 
@@ -39,7 +39,7 @@ class EnhancedUserDataPanelAdapter(UserDataPanelAdapter):
         return self.context.getProperty('quote', '')
 
     def set_quote(self, value):
-        return self.context.setMemberProperties({'quote': value})
+        self.context.setMemberProperties({'quote': value or ''})
 
     quote = property(get_quote, set_quote)
 
@@ -47,7 +47,7 @@ class EnhancedUserDataPanelAdapter(UserDataPanelAdapter):
         return self.context.getProperty('summary', '')
 
     def set_summary(self, value):
-        return self.context.setMemberProperties({'summary': value})
+        self.context.setMemberProperties({'summary': value or ''})
 
     summary = property(get_summary, set_summary)
 
@@ -63,6 +63,6 @@ class EnhancedUserDataPanelAdapter(UserDataPanelAdapter):
         return self.context.getProperty('specialities', '')
 
     def set_specialities(self, value):
-        return self.context.setMemberProperties({'specialities': value})
+        self.context.setMemberProperties({'specialities': value or ''})
 
     specialities = property(get_specialities, set_specialities)

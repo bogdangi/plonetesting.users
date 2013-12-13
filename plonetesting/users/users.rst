@@ -140,3 +140,19 @@ Check *Import Data from LinkeIn* on profile page
     True
     >>> 'Function name' in self.browser.contents
     True
+
+    Check that data from linkedin can be changed
+    >>> browser.getControl('Import Data from LinkeIn').click()
+    >>> browser.getControl('Function').value = 'Changed Function name'
+    >>> browser.getControl('Save').click()
+    >>> browser.open('http://nohost/plone/@@personal-information')
+    >>> 'Changed Function name' in self.browser.contents
+    True
+
+    Check that data from linkedin can be removed
+    >>> browser.getControl('Import Data from LinkeIn').click()
+    >>> browser.getControl('Function').value = ''
+    >>> browser.getControl('Save').click()
+    >>> browser.open('http://nohost/plone/@@personal-information')
+    >>> browser.getControl('Function').value
+    ''
